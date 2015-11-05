@@ -7,6 +7,9 @@ var map = new Map(cvs, ctx);
 var man = new Human();
 map.add(man);
 moveToCenter(man);
+for(var i = 0; i < 10; i++) {
+	map.add(new Human(Math.floor(Math.random()*map._w), Math.floor(Math.random()*map._h)));
+}
 
 function render() {
 	map.repaint();
@@ -48,6 +51,18 @@ document.addEventListener('keydown', function(e) {
 			break;
 		case KEY.S:
 			man.moveTo(man._x, man._y + 1);
+			break;
+		case KEY.Q:
+			man.moveTo(man._x - 1, man._y - 1);
+			break;
+		case KEY.E:
+			man.moveTo(man._x + 1, man._y - 1);
+			break;
+		case KEY.Z:
+			man.moveTo(man._x - 1, man._y + 1);
+			break;
+		case KEY.C:
+			man.moveTo(man._x + 1, man._y + 1);
 			break;
 	}
 	_.log('Move to', man._x, man._y)
