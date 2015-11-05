@@ -3,8 +3,8 @@ var Map = function(cvs, ctx, config) {
     this._cvs = cvs;
     this._ctx = ctx;
 	this._config = {
-		'CELLSIZE': config.CELLSIZE || 10,
-		'MOVESTEP': config.MOVESTEP || 10
+		'CELLSIZE': config && config.CELLSIZE || 10,
+		'MOVESTEP': config && config.MOVESTEP || 10
 	};
 	this._w = this._cvs.width / this._config.CELLSIZE;
 	this._h = this._cvs.height / this._config.CELLSIZE;

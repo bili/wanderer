@@ -3,7 +3,7 @@ var ctx = cvs.getContext('2d');
 cvs.width = window.innerWidth;
 cvs.height = window.innerHeight;
 
-var map = new Map(cvs, ctx, {});
+var map = new Map(cvs, ctx);
 var man = new Human();
 map.add(man);
 moveToCenter(man);
@@ -26,10 +26,10 @@ document.addEventListener('keydown', function(e) {
 	_.log('Event keyDown triggered', e.keyCode);
 	switch(e.keyCode) {
 		case KEY.LEFT:
-			man.moveTo(man._x -1, man._y);
+			man.moveTo(man._x - 1, man._y);
 			break;
 		case KEY.A:
-			man.moveTo(man._x -1, man._y);
+			man.moveTo(man._x - 1, man._y);
 			break;
 		case KEY.RIGHT:
 			man.moveTo(man._x + 1, man._y);
