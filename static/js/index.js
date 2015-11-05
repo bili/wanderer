@@ -9,9 +9,8 @@ map.add(man);
 moveToCenter(man);
 var woman = new PinkHuman();
 map.add(woman);
-moveToCenter(woman);
-woman.moveTo(woman._x + 1, woman._y);
-for(var i = 0; i < 100; i++) {
+woman.moveTo(man._x + 1, man._y);
+for(var i = 0; i < 500; i++) {
 	map.add(new Hill(Math.floor(Math.random()*map._w), Math.floor(Math.random()*map._h)));
 }
 
