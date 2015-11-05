@@ -4,11 +4,15 @@ cvs.width = window.innerWidth;
 cvs.height = window.innerHeight;
 
 var map = new Map(cvs, ctx);
-var man = new Human();
+var man = new BlueHuman();
 map.add(man);
 moveToCenter(man);
-for(var i = 0; i < 10; i++) {
-	map.add(new Human(Math.floor(Math.random()*map._w), Math.floor(Math.random()*map._h)));
+var woman = new PinkHuman();
+map.add(woman);
+moveToCenter(woman);
+woman.moveTo(woman._x + 1, woman._y);
+for(var i = 0; i < 100; i++) {
+	map.add(new Hill(Math.floor(Math.random()*map._w), Math.floor(Math.random()*map._h)));
 }
 
 function render() {

@@ -62,6 +62,34 @@ Human.prototype.repaint = function() {
     return this;
 };
 
+var BlueHuman = function() {
+	Human.apply(this, arguments);
+	this._res = 'static/images/human-blue.png';
+	return this;
+};
+extend(BlueHuman, Human);
+
+var GoldHuman = function() {
+	Human.apply(this, arguments);
+	this._res = 'static/images/human-gold.png';
+	return this;
+};
+extend(GoldHuman, Human);
+
+var PinkHuman = function() {
+	Human.apply(this, arguments);
+	this._res = 'static/images/human-pink.png';
+	return this;
+};
+extend(PinkHuman, Human);
+
+var Hill = function() {
+	Human.apply(this, arguments);
+	this._res = 'static/images/hill.png';
+	return this;
+};
+extend(Hill, Human);
+
 window.requestAnimationFrame = window.requestAnimationFrame 
 	|| window.mozRequestAnimationFrame 
 	|| window.webkitRequestAnimationFrame 
@@ -69,3 +97,11 @@ window.requestAnimationFrame = window.requestAnimationFrame
 	|| function(callback){
 		window.setTimeout(callback, 1000 / 60);
 	};
+
+function extend(Child, Parent) {
+　　var F = function() {};　　　　
+	F.prototype = Parent.prototype;　　　　
+	Child.prototype = new F();　　　　
+	Child.prototype.constructor = Child;　　　　
+	Child.uber = Parent.prototype;　　
+}
