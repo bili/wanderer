@@ -23,6 +23,17 @@ Map.prototype.repaint = function() {
     });
     return this;
 };
+Map.prototype.isHill = function(x, y) {
+	var flag = false;
+    this._elems.forEach(function(e) {
+        if (e._x == x && e._y == y && _.isChildOf(e, Hill)) {
+        	_.log(x, y, 'is Hill');
+        	flag = true;
+        	return;
+        }
+    });
+    return flag;
+};
 
 var Human = function(x, y) {
     this._map = null;
@@ -35,6 +46,10 @@ var Human = function(x, y) {
     return this;
 }
 Human.prototype.moveTo = function(x, y) {
+	if (this._map.isHill(x, y)) {
+		_.log('Hill! Can not move ahead.'); 
+		return;
+	}
     this._x = x;
     this._y = y;
     return this;

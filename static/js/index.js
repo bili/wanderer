@@ -9,7 +9,7 @@ map.add(man);
 moveToCenter(man);
 var woman = new PinkHuman();
 map.add(woman);
-woman.moveTo(man._x + 1, man._y);
+woman.moveTo(man._x + 3, man._y);
 for(var i = 0; i < 500; i++) {
 	map.add(new Hill(Math.floor(Math.random()*map._w), Math.floor(Math.random()*map._h)));
 }
