@@ -13,7 +13,6 @@ Map.prototype.repaint = function() {
     this._cvs.width = this._cvs.width;
     this._cvs.height = this._cvs.height;
     this._elems.forEach(function(e) {
-		_.log('repaint', e._res);
         e.repaint();
     });
     return this;
@@ -36,7 +35,7 @@ Human.prototype.repaint = function() {
 	var img;
 	var _self = this;
 	if (this._imgCache) {
-		img = this.imgCache;
+		img = this._imgCache;
 		if (_self._map) {
 			_self._map._ctx.drawImage(img, _self._x, _self._y, img.width, img.height);
 		}
@@ -46,7 +45,7 @@ Human.prototype.repaint = function() {
 			if (_self._map) {
 				_self._map._ctx.drawImage(this, _self._x, _self._y, this.width, this.height);
 			}
-			_self.imgCache = this;
+			_self._imgCache = this;
 		};
 		img.src = this._res;
 	}

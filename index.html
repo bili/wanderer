@@ -8,12 +8,18 @@
     <title>Wanderer</title>
 	<style>
 		html, body {margin:0;padding:0;font-size:13px;overflow:hidden;}
-		#map {position:absolute;left:0;right:0;top:0;bottom:0;}
+		#map {position:absolute;left:0;right:0;top:0;bottom:0;width:100%;height:100%;
+			background:
+				-webkit-linear-gradient(top, transparent 9px, silver 10px),
+				-webkit-linear-gradient(left, transparent 9px, silver 10px);
+				background-size: 10px 10px;
+		}
 	</style>
 </head>
 
 <body>
 	<canvas id="map"></canvas>
+	<canvas id="grid"></canvas>
     <script src="https://rawgithub.com/bili/abovescore/master/static/js/abovescore.js"></script>
     <script src="static/js/wanderer.js"></script>
     <script src="static/js/index.js"></script>

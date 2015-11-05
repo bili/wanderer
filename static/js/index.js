@@ -1,7 +1,4 @@
-var mapCanvas = document.getElementById('map');
-var mapContext = mapCanvas.getContext('2d');
-mapCanvas.width = window.innerWidth;
-mapCanvas.height = window.innerHeight;
+DEBUG = true;
 
 var KEY = {
 	'UP': 38,
@@ -10,8 +7,13 @@ var KEY = {
 	'RIGHT': 39
 };
 var CONFIG = {
-	'MOVESTEP': 5
-}
+	'MOVESTEP': 10
+};
+
+var mapCanvas = document.getElementById('map');
+var mapContext = mapCanvas.getContext('2d');
+mapCanvas.width = window.innerWidth;
+mapCanvas.height = window.innerHeight;
 
 var map = new Map(mapCanvas, mapContext);
 var man = new Human();
@@ -24,22 +26,22 @@ function render() {
 render();
 
 document.addEventListener('keydown', function(e) {
-	_.log('Event keyDown triggered', e.keyCode);
+	if (DEBUG) _.log('Event keyDown triggered', e.keyCode);
 	switch(e.keyCode) {
 		case KEY.LEFT:
-			_.log('Move to', man._x - CONFIG.MOVESTEP, man._y)
+			if (DEBUG) _.log('Move to', man._x - CONFIG.MOVESTEP, man._y)
 			man.moveTo(man._x-CONFIG.MOVESTEP, man._y);
 			break;
 		case KEY.RIGHT:
-			_.log('Move to', man._x + CONFIG.MOVESTEP, man._y)
+			if (DEBUG) _.log('Move to', man._x + CONFIG.MOVESTEP, man._y)
 			man.moveTo(man._x+CONFIG.MOVESTEP, man._y);
 			break;
 		case KEY.UP:
-			_.log('Move to', man._x, man._y - CONFIG.MOVESTEP)
+			if (DEBUG) _.log('Move to', man._x, man._y - CONFIG.MOVESTEP)
 			man.moveTo(man._x, man._y-CONFIG.MOVESTEP);
 			break;
 		case KEY.DOWN:
-			_.log('Move to', man._x, man._y + CONFIG.MOVESTEP)
+			if (DEBUG) _.log('Move to', man._x, man._y + CONFIG.MOVESTEP)
 			man.moveTo(man._x, man._y+CONFIG.MOVESTEP);
 			break;
 	}
