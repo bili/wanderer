@@ -1,7 +1,13 @@
-var Map = function(cvs, ctx) {
+var Map = function(cvs, ctx, config) {
     this._elems = [];
     this._cvs = cvs;
     this._ctx = ctx;
+	this._config = {
+		'CELLSIZE': config.CELLSIZE || 10,
+		'MOVESTEP': config.MOVESTEP || 10
+	};
+	this._w = this._cvs.width / this._config.CELLSIZE;
+	this._h = this._cvs.height / this._config.CELLSIZE;
     return this;
 };
 Map.prototype.add = function(elem) {
@@ -18,10 +24,12 @@ Map.prototype.repaint = function() {
     return this;
 };
 
-var Human = function() {
+var Human = function(x, y) {
     this._map = null;
-    this._x = 0;
-    this._y = 0;
+    this._x = x || 0;
+    this._y = y || 0;
+	this._w = 0;
+	this._h = 0;
     this._res = "static/images/human.png";
 	this._imgCache = null;
     return this;
@@ -37,15 +45,17 @@ Human.prototype.repaint = function() {
 	if (this._imgCache) {
 		img = this._imgCache;
 		if (_self._map) {
-			_self._map._ctx.drawImage(img, _self._x, _self._y, img.width, img.height);
+			_self._map._ctx.drawImage(img, _self._x * _self._map._config.CELLSIZE, _self._y * _self._map._config.CELLSIZE, img.width, img.height);
 		}
 	} else {
 		img = new Image();
 		img.onload = function() {
 			if (_self._map) {
-				_self._map._ctx.drawImage(this, _self._x, _self._y, this.width, this.height);
+				_self._map._ctx.drawImage(this, _self._x * _self._map._config.CELLSIZE, _self._y * _self._map._config.CELLSIZE, this.width, this.height);
 			}
 			_self._imgCache = this;
+			_self._w = this.width / _self._map._config.CELLSIZE;
+			_self._h = this.height / _self._map._config.CELLSIZE;
 		};
 		img.src = this._res;
 	}
