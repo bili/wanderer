@@ -35,23 +35,36 @@ Map.prototype.isHill = function(x, y) {
     return flag;
 };
 
-var Human = function(x, y) {
+var Thing = function(x, y) {
     this._map = null;
     this._x = x || 0;
     this._y = y || 0;
 	this._w = 0;
 	this._h = 0;
+    return this;
+};
+Thing.prototype.setPosition = function(x, y) {
+    this._x = x;
+    this._y = y;
+    return this;
+};
+Thing.prototype.repaint = function() {
+	return this;
+};
+
+var Human = function() {
+	Thing.apply(this, arguments);
     this._res = "static/images/human.png";
 	this._imgCache = null;
     return this;
-}
+};
+extend(Human, Thing);
 Human.prototype.moveTo = function(x, y) {
 	if (this._map.isHill(x, y)) {
 		_.log('Hill! Can not move ahead.'); 
 		return;
 	}
-    this._x = x;
-    this._y = y;
+	this.setPosition(x, y);
     return this;
 };
 Human.prototype.repaint = function() {
@@ -99,11 +112,34 @@ var PinkHuman = function() {
 extend(PinkHuman, Human);
 
 var Hill = function() {
-	Human.apply(this, arguments);
+	Thing.apply(this, arguments);
 	this._res = 'static/images/hill.png';
 	return this;
 };
-extend(Hill, Human);
+extend(Hill, Thing);
+
+Hill.prototype.repaint = function() {
+	var img;
+	var _self = this;
+	if (this._imgCache) {
+		img = this._imgCache;
+		if (_self._map) {
+			_self._map._ctx.drawImage(img, _self._x * _self._map._config.CELLSIZE, _self._y * _self._map._config.CELLSIZE, img.width, img.height);
+		}
+	} else {
+		img = new Image();
+		img.onload = function() {
+			if (_self._map) {
+				_self._map._ctx.drawImage(this, _self._x * _self._map._config.CELLSIZE, _self._y * _self._map._config.CELLSIZE, this.width, this.height);
+			}
+			_self._imgCache = this;
+			_self._w = this.width / _self._map._config.CELLSIZE;
+			_self._h = this.height / _self._map._config.CELLSIZE;
+		};
+		img.src = this._res;
+	}
+    return this;
+};
 
 window.requestAnimationFrame = window.requestAnimationFrame 
 	|| window.mozRequestAnimationFrame 
