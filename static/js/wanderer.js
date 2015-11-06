@@ -23,11 +23,11 @@ Map.prototype.repaint = function() {
     });
     return this;
 };
-Map.prototype.isHill = function(x, y) {
+Map.prototype.isRock = function(x, y) {
 	var flag = false;
     this._elems.forEach(function(e) {
-        if (e._x == x && e._y == y && _.isChildOf(e, Hill)) {
-        	_.log(x, y, 'is Hill');
+        if (e._x == x && e._y == y && _.isChildOf(e, Rock)) {
+        	_.log(x, y, 'is Rock');
         	flag = true;
         	return;
         }
@@ -60,7 +60,7 @@ var Human = function() {
 };
 extend(Human, Thing);
 Human.prototype.moveTo = function(x, y) {
-	if (this._map.isHill(x, y)) {
+	if (this._map.isRock(x, y)) {
 		_.log('Hill! Can not move ahead.'); 
 		return;
 	}
@@ -111,14 +111,43 @@ var PinkHuman = function() {
 };
 extend(PinkHuman, Human);
 
-var Hill = function() {
+var Rock = function() {
 	Thing.apply(this, arguments);
-	this._res = 'static/images/hill.png';
+	this._res = 'static/images/rock.png';
 	return this;
 };
-extend(Hill, Thing);
+extend(Rock, Thing);
 
-Hill.prototype.repaint = function() {
+Rock.prototype.repaint = function() {
+	var img;
+	var _self = this;
+	if (this._imgCache) {
+		img = this._imgCache;
+		if (_self._map) {
+			_self._map._ctx.drawImage(img, _self._x * _self._map._config.CELLSIZE, _self._y * _self._map._config.CELLSIZE, img.width, img.height);
+		}
+	} else {
+		img = new Image();
+		img.onload = function() {
+			if (_self._map) {
+				_self._map._ctx.drawImage(this, _self._x * _self._map._config.CELLSIZE, _self._y * _self._map._config.CELLSIZE, this.width, this.height);
+			}
+			_self._imgCache = this;
+			_self._w = this.width / _self._map._config.CELLSIZE;
+			_self._h = this.height / _self._map._config.CELLSIZE;
+		};
+		img.src = this._res;
+	}
+    return this;
+};
+var Tree = function() {
+	Thing.apply(this, arguments);
+	this._res = 'static/images/tree.png';
+	return this;
+};
+extend(Tree, Thing);
+
+Tree.prototype.repaint = function() {
 	var img;
 	var _self = this;
 	if (this._imgCache) {
