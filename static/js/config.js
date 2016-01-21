@@ -1,4 +1,4 @@
-_.log.DEBUG = true;
+_.log.debug = true;
 
 var KEY = {
 	'UP': 38,
@@ -13,4 +13,8 @@ var KEY = {
 	'E': 69,
 	'Z': 90,
 	'C': 67
+};
+var MAP = {
+    w: 300,
+    h: 300
 };

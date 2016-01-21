@@ -8,6 +8,8 @@ var Map = function(cvs, ctx, config) {
 	};
 	this._w = this._cvs.width / this._config.CELLSIZE;
 	this._h = this._cvs.height / this._config.CELLSIZE;
+    
+    this._grid = new PF.Grid(this._w, this._h); 
     return this;
 };
 Map.prototype.add = function(elem) {
@@ -23,6 +25,11 @@ Map.prototype.repaint = function() {
     });
     return this;
 };
+Map.prototype.remove = function(x, y) {
+    // this._ctx.clearRect(x, y, x*this._config.CELLSIZE, y*this._config.CELLSIZE);
+    this._ctx.clearRect(0,0,300,300);
+    return this;
+};
 Map.prototype.isRock = function(x, y) {
 	var flag = false;
     this._elems.forEach(function(e) {
@@ -34,18 +41,32 @@ Map.prototype.isRock = function(x, y) {
     });
     return flag;
 };
+Map.prototype.findPath = function(start, end) {
+    var finder = new PF.BiDijkstraFinder({
+        allowDiagonal: true,
+        // dontCrossCorners: true
+        heuristic: function(dx, dy) {
+            return Math.min(dx, dy);
+        }
+    });
+    var path = finder.findPath(start._x, start._y, end._x, end._y, this._grid.clone());
+    _.log('Path from A('+[start._x, start._y].join(',')+'),' + ' to B('+[end._x, end._y].join(',')+'): ', JSON.stringify(path));
+    return path;
+};
 
-var Thing = function(x, y) {
+var Thing = function(x, y, isBlocked) {
     this._map = null;
     this._x = x || 0;
     this._y = y || 0;
 	this._w = 0;
 	this._h = 0;
+    if (isBlocked) this._map._grid.setWalkableAt(this._x, this._y, false);
     return this;
 };
-Thing.prototype.setPosition = function(x, y) {
+Thing.prototype.setPosition = function(x, y, isBlocked) {
     this._x = x;
     this._y = y;
+    if (isBlocked) this._map._grid.setWalkableAt(this._x, this._y, false);
     return this;
 };
 Thing.prototype.repaint = function() {
@@ -64,7 +85,8 @@ Human.prototype.moveTo = function(x, y) {
 		_.log('Hill! Can not move ahead.'); 
 		return;
 	}
-	this.setPosition(x, y);
+	this.setPosition(this._x, this._y, true);
+	this.setPosition(x, y, false);
     return this;
 };
 Human.prototype.repaint = function() {
