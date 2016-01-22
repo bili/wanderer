@@ -7,22 +7,25 @@ var path = [];
 var map = new Map(cvs, ctx);
 var man = new BlueHuman();
 map.add(man);
-moveToCenter(man);
-var woman = new PinkHuman();
-map.add(woman);
-// woman.moveTo(man._x + 3, man._y+10);
-woman.moveTo(Math.floor(Math.random()*map._w), Math.floor(Math.random()*map._h));
-// for(var i = 0; i < 200; i++) {
+man.moveTo(0, 0);
+var hill = new Hill(man._x + 3, man._y);
+map.add(hill);
+addWall();
+// moveToCenter(man);
+// hill.moveTo(man._x + 3, man._y+10);
+// woman.moveTo(Math.floor(Math.random()*map._w), Math.floor(Math.random()*map._h));
+// for(var i = 0; i < 10; i++) {
 	// if (Math.random() > 0.2) map.add(new Tree(Math.floor(Math.random()*map._w), Math.floor(Math.random()*map._h), false));
 	// else map.add(new Rock(Math.floor(Math.random()*map._w), Math.floor(Math.random()*map._h), false));
 // }
 
 function render() {
+    // showPath(man, hill);
 	map.repaint();
 	window.requestAnimationFrame(render);
 }
 render();
-showPath(man, woman);
+// showPath(man, hill);
 function moveToCenter(obj) {
 	var x = Math.floor((map._w - obj._w) / 2);
 	var y = Math.floor((map._h - obj._h) / 2);
@@ -72,7 +75,7 @@ document.addEventListener('keydown', function(e) {
 			man.moveTo(man._x + 1, man._y + 1);
 			break;
 	}
-    showPath(man, woman);
+    showPath(man, hill);
 	_.log('Move to', man._x, man._y)
 }, false);
 
@@ -82,11 +85,25 @@ function showPath(a, b) {
     path.shift();
     path.pop();
     for(var i = 0; i < path.length; i++) {
-        map.add(new Tree(path[i][0], path[i][1]));
+        map.add(new Human(path[i][0], path[i][1]));
     }
 }
 function clearPath(path) {
     for(var i = 0; i < path.length; i++) {
         map.remove(path[i][0], path[i][1]);
+    }
+    path.length = 0;
+}
+function addWall() {
+    var r;
+    for(var i = 0; i < 20; i++) {
+        r = new Rock();
+        map.add(r);
+        r.setPosition(i+5, 15);
+    }
+    for(var i = 0; i < 10; i++) {
+        r = new Rock();
+        map.add(r);
+        r.setPosition(8, i+5);
     }
 }

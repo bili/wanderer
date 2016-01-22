@@ -1,4 +1,4 @@
-_.log.debug = true;
+_.log.debug = false;
 
 var KEY = {
 	'UP': 38,

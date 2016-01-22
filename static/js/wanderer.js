@@ -9,7 +9,7 @@ var Map = function(cvs, ctx, config) {
 	this._w = this._cvs.width / this._config.CELLSIZE;
 	this._h = this._cvs.height / this._config.CELLSIZE;
     
-    this._grid = new PF.Grid(this._w, this._h); 
+    this._grid = new PF.Grid(this._w, this._h);
     return this;
 };
 Map.prototype.add = function(elem) {
@@ -26,8 +26,14 @@ Map.prototype.repaint = function() {
     return this;
 };
 Map.prototype.remove = function(x, y) {
-    // this._ctx.clearRect(x, y, x*this._config.CELLSIZE, y*this._config.CELLSIZE);
-    this._ctx.clearRect(0,0,300,300);
+    this._ctx.clearRect(x*this._config.CELLSIZE, y*this._config.CELLSIZE, (x+1)*this._config.CELLSIZE,(y+1)*this._config.CELLSIZE+this._config.CELLSIZE);
+    _.log(x*this._config.CELLSIZE, y*this._config.CELLSIZE, (x+1)*this._config.CELLSIZE,(y+1)*this._config.CELLSIZE+this._config.CELLSIZE);
+    var that = this;
+    this._elems.forEach(function(item, idx) {
+        if (item._x == x, item._y == y) {
+            that._elems.splice(idx, 1);
+        }
+    });
     return this;
 };
 Map.prototype.isRock = function(x, y) {
@@ -50,7 +56,7 @@ Map.prototype.findPath = function(start, end) {
         }
     });
     var path = finder.findPath(start._x, start._y, end._x, end._y, this._grid.clone());
-    _.log('Path from A('+[start._x, start._y].join(',')+'),' + ' to B('+[end._x, end._y].join(',')+'): ', JSON.stringify(path));
+    // _.log('Path from A('+[start._x, start._y].join(',')+'),' + ' to B('+[end._x, end._y].join(',')+'): ', JSON.stringify(path));
     return path;
 };
 
@@ -60,13 +66,14 @@ var Thing = function(x, y, isBlocked) {
     this._y = y || 0;
 	this._w = 0;
 	this._h = 0;
-    if (isBlocked) this._map._grid.setWalkableAt(this._x, this._y, false);
+    this._isBlocked = isBlocked;
     return this;
 };
 Thing.prototype.setPosition = function(x, y, isBlocked) {
     this._x = x;
     this._y = y;
-    if (isBlocked) this._map._grid.setWalkableAt(this._x, this._y, false);
+    this._isBlocked = typeof isBlocked == 'undefined' ?  this._isBlocked : isBlocked;
+    this._map._grid.setWalkableAt(this._x, this._y, !this._isBlocked);
     return this;
 };
 Thing.prototype.repaint = function() {
@@ -76,6 +83,7 @@ Thing.prototype.repaint = function() {
 var Human = function() {
 	Thing.apply(this, arguments);
     this._res = "static/images/human.png";
+    this._isBlocked = true;
 	this._imgCache = null;
     return this;
 };
@@ -85,8 +93,8 @@ Human.prototype.moveTo = function(x, y) {
 		_.log('Hill! Can not move ahead.'); 
 		return;
 	}
-	this.setPosition(this._x, this._y, true);
-	this.setPosition(x, y, false);
+	this.setPosition(this._x, this._y, false);
+	this.setPosition(x, y, true);
     return this;
 };
 Human.prototype.repaint = function() {
@@ -135,6 +143,7 @@ extend(PinkHuman, Human);
 
 var Rock = function() {
 	Thing.apply(this, arguments);
+    this._isBlocked = true;
 	this._res = 'static/images/rock.png';
 	return this;
 };
@@ -162,9 +171,40 @@ Rock.prototype.repaint = function() {
 	}
     return this;
 };
+var Hill = function() {
+	Thing.apply(this, arguments);
+    this._isBlocked = true;
+	this._res = 'static/images/hill.png';
+	return this;
+};
+extend(Hill, Thing);
+
+Hill.prototype.repaint = function() {
+	var img;
+	var _self = this;
+	if (this._imgCache) {
+		img = this._imgCache;
+		if (_self._map) {
+			_self._map._ctx.drawImage(img, _self._x * _self._map._config.CELLSIZE, _self._y * _self._map._config.CELLSIZE, img.width, img.height);
+		}
+	} else {
+		img = new Image();
+		img.onload = function() {
+			if (_self._map) {
+				_self._map._ctx.drawImage(this, _self._x * _self._map._config.CELLSIZE, _self._y * _self._map._config.CELLSIZE, this.width, this.height);
+			}
+			_self._imgCache = this;
+			_self._w = this.width / _self._map._config.CELLSIZE;
+			_self._h = this.height / _self._map._config.CELLSIZE;
+		};
+		img.src = this._res;
+	}
+    return this;
+};
 var Tree = function() {
 	Thing.apply(this, arguments);
 	this._res = 'static/images/tree.png';
+    this._isBlocked = false;
 	return this;
 };
 extend(Tree, Thing);
